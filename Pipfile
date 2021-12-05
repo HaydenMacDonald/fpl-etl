@@ -5,6 +5,12 @@ name = "pypi"
 
 [packages]
 "mysql.connector" = "*"
+pandas = "*"
+aiohttp = "*"
+numpy = "*"
+fpl = "*"
+configparser = "*"
+mysqlclient = "*"
 
 [dev-packages]
 

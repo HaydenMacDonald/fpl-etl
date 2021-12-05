@@ -1,5 +1,7 @@
 import asyncio
-import mysql.connector
+import configparser
+import MySQLdb
+from mysql.connector import errorcode
 from helpers.get_spi_data import get_spi_data
 from helpers.get_player_data import get_player_data
 from helpers.clean_player_data import clean_player_data
@@ -39,32 +41,40 @@ def main():
     config.read("db.cfg")
 
     # Connect to planetscale db
-    try:
-        conn = mysql.connector.connect(
-            host     = f"{config['DB']['HOST_NAME']}",
-            user     = f"{config['DB']['DB_USER']}",
-            password = f"{config['DB']['DB_PASSWORD']}",
-            db       = f"{config['DB']['DB_NAME']}",
-            ssl_mode = f"{config['DB']['SSL_MODE']}",
-            ssl      = {
-                "ca": f"{config['DB']['SSL_CA']}"
-            }
-        )
-    except mysql.connector.Error as err:
-        if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-            print("Something is wrong with your user name or password")
-        elif err.errno == errorcode.ER_BAD_DB_ERROR:
-            print("Database does not exist")
-        else:
-            print(err)
-    else:
-    conn.close()
+    # try:
+    conn = MySQLdb.connect(
+        host     = f"{config['DB']['HOST']}",
+        user     = f"{config['DB']['DB_USER']}",
+        password = f"{config['DB']['DB_PASSWORD']}",
+        db       = f"{config['DB']['DB_NAME']}",
+        port     = int(f"{config['DB']['DB_PORT']}"),
+        ssl_mode = f"{config['DB']['SSL_MODE']}",
+        ssl      = {
+            "ca": f"{config['DB']['SSL_CA']}"
+        }
+    )
+    # except MySQLdb.Error as err:
+    #     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+    #         print("Something is wrong with your user name or password")
+    #     elif err.errno == errorcode.ER_BAD_DB_ERROR:
+    #         print("Database does not exist")
+    #     else:
+    #         print(err)
+    # else:
+    #     conn.close()
     
     # Create cursor
     cur = conn.cursor()
+
+    # Test
+    cur.execute("SELECT CURDATE();")
+
+    # Fetch one result
+    row = cur.fetchone()
+    print("Current date is: {0}".format(row[0]))
     
     # Process and insert song and artist data
-    write_to_db(cur, conn, filepath='data/song_data', func=process_song_file)
+    #write_to_db(cur, conn, filepath='data/song_data', func=process_song_file)
     
     # Close connection to sparkifydb
     conn.close()
