@@ -1,0 +1,30 @@
+name: scheduled-data-collection 
+on:
+  schedule:
+    - cron: '0 12 * * THU'
+
+jobs:
+  scheduled-data-collection:
+    runs-on: ubuntu-latest
+    name: scheduled-data-collection
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9.5' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Collect data
+        run: |
+          python main.py
+      - name: Commit files
+        run: |
+          git config --local user.email "actions@github.com"
+          git config --local user.name "GitHub Actions"
+          git add -A
+          git commit -m "feat: add new weekly data"
+          git push
