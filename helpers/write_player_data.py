@@ -9,3 +9,12 @@ def write_player_data(data, directory, filename):
     ## Then save data
     with open(f"{directory}{filename}", "w") as outfile:
         json.dump(data, outfile, ensure_ascii = True, indent = 4, separators=(",", ":"))
+
+def write_weekly_data_to_db(directory, filename):
+
+    ## Check if directory exists
+    if Path(f"{directory}"):
+
+        ## Then save data
+        with open(f"{directory}{filename}", "w") as outfile:
+            data = json.load(outfile)
