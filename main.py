@@ -7,6 +7,7 @@ from helpers.get_player_data import get_player_data
 from helpers.clean_player_data import clean_player_data
 from helpers.prepare_weekly_player_data import prepare_weekly_data
 from helpers.delete_data import delete_data
+from sql.sql_queries import create_table_queries, drop_table_queries
 
 def process_weekly_data():
 
@@ -30,6 +31,22 @@ def write_to_db():
 
     ## Clear weekly data from local
     delete_data()
+
+def create_tables(cur, conn):
+    """
+    Creates each table using the queries in `create_table_queries` list. 
+    """
+    for query in create_table_queries:
+        cur.execute(query)
+        conn.commit()
+
+def drop_tables(cur, conn):
+    """
+    Drops each table using the queries in `drop_table_queries` list.
+    """
+    for query in drop_table_queries:
+        cur.execute(query)
+        conn.commit()
 
 
 def main():
