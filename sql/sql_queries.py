@@ -1,10 +1,10 @@
 # DROP TABLES
 
-player_gameweek_table_drop = "DROP TABLE IF EXISTS player_gameweeks;"
-player_table_drop = "DROP TABLE IF EXISTS players;"
-position_table_drop = "DROP TABLE IF EXISTS positions;"
-team_table_drop = "DROP TABLE IF EXISTS teams;"
-gameweek_table_drop = "DROP TABLE IF EXISTS gameweeks;"
+player_gameweeks_table_drop = "DROP TABLE IF EXISTS player_gameweeks;"
+players_table_drop = "DROP TABLE IF EXISTS players;"
+positions_table_drop = "DROP TABLE IF EXISTS positions;"
+teams_table_drop = "DROP TABLE IF EXISTS teams;"
+gameweeks_table_drop = "DROP TABLE IF EXISTS gameweeks;"
 
 # CREATE TABLES
 
@@ -74,7 +74,6 @@ CREATE TABLE IF NOT EXISTS gameweeks (
 """)
 
 # INSERT RECORDS
-
 player_gameweek_table_insert = ("""
 INSERT INTO player_gameweeks (
     season, 
@@ -137,4 +136,4 @@ DO NOTHING;
 
 # QUERY LISTS
 create_table_queries = [player_gameweek_table_create, player_table_create, position_table_create, team_table_create, gameweeks_table_create]
-drop_table_queries = [player_gameweek_table_drop, player_table_drop, position_table_drop, team_table_drop, gameweeks_table_drop]
+drop_table_queries = [player_gameweeks_table_drop, players_table_drop, positions_table_drop, teams_table_drop, gameweeks_table_drop]

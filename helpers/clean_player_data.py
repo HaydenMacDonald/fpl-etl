@@ -93,12 +93,12 @@ def clean_player_data(data):
                 match = {}
                 match = {
                     "id": game["id"],
-                    "event_name": game["event_name"], 
+                    "event_name": game.get("event_name"), 
                     "is_home": game["is_home"], 
                     "difficulty": game["difficulty"], 
                     "team_h": game["team_h"], 
                     "team_a": game["team_a"], 
-                    "kickoff_time": datetime.strptime(game["kickoff_time"], "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")
+                    "kickoff_time": datetime.strptime(game.get("kickoff_time"), "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")
                 }
                 fixtures.append(match.copy())
 

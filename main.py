@@ -30,7 +30,7 @@ def write_to_db():
     write_weekly_data_to_db()
 
     ## Clear weekly data from local
-    delete_data()
+    # delete_data()
 
 def create_tables(cur, conn):
     """
@@ -58,7 +58,6 @@ def main():
     config.read("db.cfg")
 
     # Connect to planetscale db
-    # try:
     conn = MySQLdb.connect(
         host     = f"{config['DB']['HOST']}",
         user     = f"{config['DB']['DB_USER']}",
@@ -70,18 +69,12 @@ def main():
             "ca": f"{config['DB']['SSL_CA']}"
         }
     )
-    # except MySQLdb.Error as err:
-    #     if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-    #         print("Something is wrong with your user name or password")
-    #     elif err.errno == errorcode.ER_BAD_DB_ERROR:
-    #         print("Database does not exist")
-    #     else:
-    #         print(err)
-    # else:
-    #     conn.close()
     
     # Create cursor
     cur = conn.cursor()
+
+    # Collect and process data
+    process_weekly_data()
 
     # Test
     cur.execute("SELECT CURDATE();")
