@@ -2,15 +2,18 @@ import pandas as pd
 import numpy as np
 from datetime import date, datetime
 import os 
+from pathlib import Path
 
 def get_spi_data():
 
+    directory = "./data/cleaned/spi-matches/"
+
     ## Target data file
-    data_file = f"./data/cleaned/spi-matches/spi-matches-{date.today()}.csv"
+    data_file = f"{directory}spi-matches-{date.today()}.csv"
 
     if date.weekday(date.today()) == 3:
         
-        ## If data doesn"t exist, get it
+        ## If data doesn't exist, get it
         if not os.path.isfile(data_file): 
             
             ## Read csv from url
@@ -120,6 +123,9 @@ def get_spi_data():
         )
 
         spi_data = spi_data[["season", "date", "league_id", "league", "team1", "team2", "spi1", "spi2", "prob1", "prob2", "probtie", "proj_score1", "proj_score2", "importance1", "importance2", "score1", "score2", "xg1", "xg2", "nsxg1", "nsxg2", "adj_score1", "adj_score2", "team1_code", "team2_code"]]
+
+        ## Check if directory exists, if not create directory
+        Path(f"{directory}").mkdir(parents=True, exist_ok=True)
 
         ## Write data to csv
         spi_data.to_csv(data_file, index=False)
