@@ -98,7 +98,7 @@ def clean_player_data(data):
                     "difficulty": game["difficulty"], 
                     "team_h": game["team_h"], 
                     "team_a": game["team_a"], 
-                    "kickoff_time": datetime.strptime(game.get("kickoff_time"), "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S")
+                    "kickoff_time": datetime.strptime(game.get("kickoff_time"), "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d %H:%M:%S") if game.get("kickoff_time") else datetime.now().replace(year = datetime.now().year + 1).strftime("%Y-%m-%d %H:%M:%S")
                 }
                 fixtures.append(match.copy())
 
