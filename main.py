@@ -25,7 +25,7 @@ def process_weekly_data():
 
 
 def write_to_db():
-    
+
     ## Write data to db
     write_weekly_data_to_db()
 
@@ -34,7 +34,7 @@ def write_to_db():
 
 def create_tables(cur, conn):
     """
-    Creates each table using the queries in `create_table_queries` list. 
+    Creates each table using the queries in `create_table_queries` list.
     """
     for query in create_table_queries:
         cur.execute(query)
@@ -69,7 +69,7 @@ def main():
             "ca": f"{config['DB']['SSL_CA']}"
         }
     )
-    
+
     # Create cursor
     cur = conn.cursor()
 
@@ -82,10 +82,10 @@ def main():
     # Fetch one result
     row = cur.fetchone()
     print("Current date is: {0}".format(row[0]))
-    
+
     # Process and insert song and artist data
     #write_to_db(cur, conn, filepath='data/song_data', func=process_song_file)
-    
+
     # Close connection to sparkifydb
     conn.close()
 
