@@ -1,6 +1,6 @@
 import asyncio
 import configparser
-import MySQLdb
+import mysql.connector
 from mysql.connector import errorcode
 from helpers.get_spi_data import get_spi_data
 from helpers.get_player_data import get_player_data
@@ -58,16 +58,14 @@ def main():
     config.read("db.cfg")
 
     # Connect to planetscale db
-    conn = MySQLdb.connect(
-        host     = f"{config['DB']['HOST']}",
-        user     = f"{config['DB']['DB_USER']}",
+    conn = mysql.connector.connect(
+        host = f"{config['DB']['HOST']}",
+        port = int(f"{config['DB']['DB_PORT']}"),
+        user = f"{config['DB']['DB_USER']}",
         password = f"{config['DB']['DB_PASSWORD']}",
-        db       = f"{config['DB']['DB_NAME']}",
-        port     = int(f"{config['DB']['DB_PORT']}"),
-        ssl_mode = f"{config['DB']['SSL_MODE']}",
-        ssl      = {
-            "ca": f"{config['DB']['SSL_CA']}"
-        }
+        db = f"{config['DB']['DB_NAME']}",
+        ssl_verify_identity = True, # f"{config['DB']['SSL_MODE']}",
+        ssl_ca = f"{config['DB']['SSL_CA']}"
     )
 
     # Create cursor

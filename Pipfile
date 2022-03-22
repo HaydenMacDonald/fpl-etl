@@ -4,14 +4,16 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-"mysql.connector" = "*"
-pandas = "*"
+mysql-connector-python = "*"
+asyncio = "*"
 aiohttp = "*"
+configparser = "*"
+pandas = "*"
 numpy = "*"
 fpl = "*"
-configparser = "*"
+requests-toolbelt = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9.0"
+python_version = "3.9"

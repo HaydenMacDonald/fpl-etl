@@ -142,5 +142,6 @@ cython_debug/
 
 # Config files
 db.cfg
+environment-setup.sh
 
 # End of https://www.toptal.com/developers/gitignore/api/python
