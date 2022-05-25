@@ -72,7 +72,8 @@ def main():
     cur = conn.cursor()
 
     # Collect and process data
-    process_weekly_data()
+    process_
+    weekly_data()
 
     # Test
     cur.execute("SELECT CURDATE();")
