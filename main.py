@@ -72,18 +72,17 @@ def main():
     cur = conn.cursor()
 
     # Collect and process data
-    process_
-    weekly_data()
+    # process_weekly_data()
 
     # Test
     cur.execute("SELECT CURDATE();")
 
     # Fetch one result
     row = cur.fetchone()
-    print("Current date is: {0}".format(row[0]))
+    print(f"Current date is: {row[0]}")
 
     # Process and insert song and artist data
-    #write_to_db(cur, conn, filepath='data/song_data', func=process_song_file)
+    # write_to_db(cur, conn, filepath='data/song_data', func=process_song_file)
 
     # Close connection to sparkifydb
     conn.close()
