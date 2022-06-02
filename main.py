@@ -36,9 +36,13 @@ def create_tables(cur, conn):
     """
     Creates each table using the queries in `create_table_queries` list.
     """
-    for query in create_table_queries:
-        cur.execute(query)
-        conn.commit()
+    try:
+        for query in create_table_queries:
+            cur.execute(query)
+            conn.commit()
+    except mysql.connector.Error as err:
+        print("Failed creating database: {}".format(err))
+        exit(1)
 
 def drop_tables(cur, conn):
     """
@@ -72,7 +76,7 @@ def main():
     cur = conn.cursor()
 
     # Collect and process data
-    # process_weekly_data()
+    process_weekly_data()
 
     # Create Tables
     create_tables(cur, conn)
@@ -81,11 +85,8 @@ def main():
     cur.execute("SHOW TABLES;")
 
     # Fetch one result
-    row = cur.fetchone()
+    row = cur.fetchall()
     print(row);
-
-    ## Drop tables
-    drop_tables(cur, conn)
 
     # Process and insert song and artist data
     # write_to_db(cur, conn, filepath='data/song_data', func=process_song_file)
