@@ -74,12 +74,18 @@ def main():
     # Collect and process data
     # process_weekly_data()
 
+    # Create Tables
+    create_tables(cur, conn)
+
     # Test
-    cur.execute("SELECT CURDATE();")
+    cur.execute("SHOW TABLES;")
 
     # Fetch one result
     row = cur.fetchone()
-    print(f"Current date is: {row[0]}")
+    print(row);
+
+    ## Drop tables
+    drop_tables(cur, conn)
 
     # Process and insert song and artist data
     # write_to_db(cur, conn, filepath='data/song_data', func=process_song_file)

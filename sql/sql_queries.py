@@ -10,7 +10,7 @@ gameweeks_table_drop = "DROP TABLE IF EXISTS gameweeks;"
 
 player_fixtures_table_create = ("""
 CREATE TABLE IF NOT EXISTS player_fixtures (
-    ref PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    ref INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     player_id VARCHAR(100),
     fixture_id VARCHAR(100),
     gameweek_id VARCHAR(100),
@@ -21,9 +21,8 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     kickoff_time datetime,
     position_id INT,
     price DOUBLE(4,2),
-    last_three_form DOUBLE(4,2),
     minutes INT,
-    nineties DOUBLE(4,2)
+    nineties DOUBLE(4,2),
     goals INT,
     goals_per_90 DOUBLE(4,2),
     xG_per_90 DOUBLE(4,2),
@@ -40,9 +39,6 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     red_cards_p90 DOUBLE(4,2),
     play_probability_next_game DOUBLE(4,2),
     play_probability_this_game DOUBLE(4,2),
-    bonus_points INT,
-    points_per_game DOUBLE(4,2),
-    total_points BIGINT,
     team_spi DOUBLE(4,2),
     opponent_spi DOUBLE(4,2),
     win_prob DOUBLE(4,4),
@@ -51,13 +47,17 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     team_projected_score DOUBLE(4,2),
     opponent_projected_score DOUBLE(4,2),
     fbref JSON,
+    bonus_points INT,
+    last_three_form DOUBLE(4,2),
+    points_per_game DOUBLE(4,2),
+    total_points INT,
     actual_points_earned INT
 );
 """)
 
 players_table_create = ("""
 CREATE TABLE IF NOT EXISTS players (
-    player_id VARCHAR(100) PRIMARY KEY NOT NULL,
+    player_id VARCHAR(100) NOT NULL PRIMARY KEY,
     first_name VARCHAR(150), 
     last_name VARCHAR(150)
 );
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS players (
 
 positions_table_create = ("""
 CREATE TABLE IF NOT EXISTS positions (
-    position_code INT PRIMARY KEY NOT NULL, 
+    position_id INT NOT NULL PRIMARY KEY, 
     position_name VARCHAR(100) NOT NULL,
     position_type VARCHAR(100) NOT NULL
 );
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS positions (
 
 teams_table_create = ("""
 CREATE TABLE IF NOT EXISTS teams (
-    team_id INT PRIMARY KEY NOT NULL, 
+    team_id INT NOT NULL PRIMARY KEY, 
     team_name VARCHAR(150) NOT NULL,
     short_name VARCHAR(100) NOT NULL
 );
@@ -81,38 +81,84 @@ CREATE TABLE IF NOT EXISTS teams (
 
 gameweeks_table_create = ("""
 CREATE TABLE IF NOT EXISTS gameweeks (
-    gameweek_id INT PRIMARY KEY NOT NULL AUTO_INCREMENT, 
+    gameweek_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
     season INT, 
     gameweek_no INT, 
     start_date datetime, 
-    end_date datetime,
+    end_date datetime
 );
 """)
 
 # INSERT RECORDS
 player_fixtures_table_insert = ("""
 INSERT INTO player_fixtures (
+    player_id,
+    fixture_id,
+    gameweek_id,
+    season,
+    team_id,
+    opponent_team_id,
+    is_home,
+    kickoff_time,
+    position_id,
+    price,
+    minutes,
+    nineties,
+    goals,
+    goals_per_90,
+    xG_per_90,
+    assists,
+    assists_per_90,
+    xA_per_90,
+    clean_sheets,
+    clean_sheets_per_90,
+    goals_conceded,
+    goals_conceded_per_90,
+    yellow_cards,
+    yellow_cards_p90,
+    red_cards,
+    red_cards_p90,
+    play_probability_next_game,
+    play_probability_this_game,
+    team_spi,
+    opponent_spi,
+    win_prob,
+    loss_prob,
+    draw_prob,
+    team_projected_score,
+    opponent_projected_score,
+    fbref,
+    bonus_points,
+    last_three_form,
+    points_per_game,
+    total_points,
+    actual_points_earned
 )
-VALUES ()
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (ref) 
 DO NOTHING;
 """)
 
 players_table_insert = ("""
-INSERT INTO players VALUES (%s, %s, %s) 
+INSERT INTO players(
+    player_id,
+    first_name, 
+    last_name
+)
+VALUES (%s, %s, %s) 
 ON CONFLICT (player_id) 
-DO UPDATE SET level=EXCLUDED.level;
+DO NOTHING;
 """)
 
 positions_table_insert = ("""
 INSERT INTO positions VALUES (%s, %s, %s)
-ON CONFLICT (position_code) 
+ON CONFLICT (position_id) 
 DO NOTHING;
 """)
 
 teams_table_insert = ("""
 INSERT INTO teams VALUES (%s, %s, %s)
-ON CONFLICT (team_code) 
+ON CONFLICT (team_id) 
 DO NOTHING;
 """)
 
