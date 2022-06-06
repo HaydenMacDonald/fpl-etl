@@ -4,6 +4,7 @@ player_fixtures_table_drop = "DROP TABLE IF EXISTS player_fixtures;"
 players_table_drop = "DROP TABLE IF EXISTS players;"
 positions_table_drop = "DROP TABLE IF EXISTS positions;"
 teams_table_drop = "DROP TABLE IF EXISTS teams;"
+fixtures_table_drop = "DROP TABLE IF EXISTS fixtures;"
 gameweeks_table_drop = "DROP TABLE IF EXISTS gameweeks;"
 
 # CREATE TABLES
@@ -15,10 +16,7 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     fixture_id VARCHAR(100),
     gameweek_id VARCHAR(100),
     season INT,
-    team_id INT,
-    opponent_team_id INT,
-    is_home boolean,
-    kickoff_time datetime,
+
     position_id INT,
     price DOUBLE(4,2),
     minutes INT,
@@ -79,6 +77,16 @@ CREATE TABLE IF NOT EXISTS teams (
 );
 """)
 
+fixtures_table_create = ("""
+CREATE TABLE IF NOT EXISTS fixtures (
+    fixture_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    home_team_id INT,
+    away_team_id INT,
+    kickoff_time datetime,
+    gameweek_id INT
+);
+""")
+
 gameweeks_table_create = ("""
 CREATE TABLE IF NOT EXISTS gameweeks (
     gameweek_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
@@ -88,6 +96,15 @@ CREATE TABLE IF NOT EXISTS gameweeks (
     end_date datetime
 );
 """)
+
+seasons_table_create = ("""
+CREATE TABLE IF NOT EXISTS seasons (
+    season INT NOT NULL, 
+    start_date date, 
+    end_date date
+);
+""")
+
 
 # INSERT RECORDS
 player_fixtures_table_insert = ("""

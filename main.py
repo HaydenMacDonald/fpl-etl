@@ -76,7 +76,10 @@ def main():
     cur = conn.cursor()
 
     # Collect and process data
-    process_weekly_data()
+    # process_weekly_data()
+
+    # Drop tables
+    drop_tables(cur, conn)
 
     # Create Tables
     create_tables(cur, conn)
