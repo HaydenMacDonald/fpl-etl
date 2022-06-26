@@ -7,7 +7,21 @@ from helpers.get_player_data import get_player_data
 from helpers.clean_player_data import clean_player_data
 from helpers.prepare_weekly_player_data import prepare_weekly_data
 from helpers.delete_data import delete_data
-from sql.sql_queries import create_table_queries, drop_table_queries
+from sql.sql_queries import *
+
+def process_data(filepath, func):
+    '''
+    Provided a filepath and a processing function (i.e. process_*_data) to process all files in a given filepath
+    '''
+    # get all files in path
+    data_files = get_files_in_path(filepath, '*.csv')
+    print(data_files)
+
+    # iterate over files and process
+    for i, datafile in enumerate(data_files, 1):
+        func(datafile)
+        print('{}/{} files processed.'.format(i, len(data_files)))
+
 
 def process_weekly_data():
 
@@ -24,40 +38,94 @@ def process_weekly_data():
     prepare_weekly_data()
 
 
-def write_to_db():
+def process_player_fixture_data(datafile):
+    """
+    Import, clean, and insert player-fixture data into db 
+    """
+    # open file
+    #df = pd.read_csv(datafile)
 
-    ## Write data to db
-    write_weekly_data_to_db()
+    ## Remove NAs
+    #df = df[df['player-fixture-id'].notna()]
 
-    ## Clear weekly data from local
-    # delete_data()
+    i = 1
+    for df in rows_generator(df):
+        print(f'Player Fixture Split #{i}')
+        
+        # Parse data from df
+        data = df[[
+            # "click_date",
+            # "masked_id",
+            # "apr_clicked",
+            # "eligibility_clicked"
+        ]].values.tolist()
 
-def create_tables(cur, conn):
+        print(len(data))
+
+        ## Insert data
+        insert_data(player_fixtures_table_insert, data)
+
+        ## Finish by incrementing for next loop
+        i += 1
+
+
+def insert_data(insert_query, data):
+    """
+    Insert a rows of data using its corresponding insert query
+    """
+    # Insert credit_reports data
+    try:
+        cur, conn = make_connection()
+        cur.executemany(insert_query, data)
+        conn.commit()
+    except mysql.connector.Error as err:
+        print(f"Failed to insert rows: {err}")
+        exit(1)
+    # Close connection
+    conn.close()
+
+
+def create_tables():
     """
     Creates each table using the queries in `create_table_queries` list.
     """
     try:
+        cur, conn = make_connection()
         for query in create_table_queries:
             cur.execute(query)
             conn.commit()
     except mysql.connector.Error as err:
-        print("Failed creating database: {}".format(err))
+        print(f"Failed to create tables: {err}")
         exit(1)
 
-def drop_tables(cur, conn):
+    # Close connection
+    conn.close()
+
+
+def drop_tables():
     """
     Drops each table using the queries in `drop_table_queries` list.
     """
-    for query in drop_table_queries:
-        cur.execute(query)
-        conn.commit()
+    try:
+        cur, conn = make_connection()
+        for query in drop_table_queries:
+            cur.execute(query)
+            conn.commit()
+            print(f"Dropped tables.")
+    except mysql.connector.Error as err:
+        print(f"Failed to drop tables: {err}")
+        exit(1)
+
+    # Close connection
+    conn.close()
 
 
-def main():
-    '''
-    Main ETL function
-    '''
-    ## Parse config file for AWS details
+def make_connection():
+    """
+    Make a connection to the database using db.cfg
+    Return the cursor and connection objects required for database operations
+    """
+    ## Parse config file for database details
     config = configparser.ConfigParser()
     config.read("db.cfg")
 
@@ -68,34 +136,58 @@ def main():
         user = f"{config['DB']['DB_USER']}",
         password = f"{config['DB']['DB_PASSWORD']}",
         db = f"{config['DB']['DB_NAME']}",
-        ssl_verify_identity = True, # f"{config['DB']['SSL_MODE']}",
+        ssl_verify_identity = True,
         ssl_ca = f"{config['DB']['SSL_CA']}"
     )
-
+    
     # Create cursor
     cur = conn.cursor()
 
-    # Collect and process data
-    # process_weekly_data()
+    for setting in settings_queries:
+        cur.execute(setting)
+        conn.commit()
 
-    # Drop tables
-    drop_tables(cur, conn)
+    return cur, conn
+
+def test_db():
+    """
+    Tests db by asking for a list of tables
+    """
+    try:
+        cur, conn = make_connection()
+        cur.execute("SHOW TABLES;")
+        row = cur.fetchall()
+        print(row);
+    except mysql.connector.Error as err:
+        print(f"Failed to get table info: {err}")
+        exit(1)
+
+    # Close connection
+    conn.close()
+
+
+def main():
+    '''
+    Main ETL function
+    '''
+
+    # UNCOMMENT LINES BELOW AS WELL AS process_data() below to repopulate db with records
+    # Drop Tables
+    # drop_tables()
 
     # Create Tables
-    create_tables(cur, conn)
+    create_tables()
+    test_db()
 
-    # Test
-    cur.execute("SHOW TABLES;")
+    # UNCOMMENT LINES BELOW AS WELL AS drop_tables() above to repopulate db with records
+    # Process and insert clearscore data
+    # process_data(filepath = 'data/raw/credit_reports', func = process_credit_reports_data)
+    # process_data(filepath = 'data/raw/logins', func = process_logins_data)
+    # process_data(filepath = 'data/raw/card_clicks', func = process_card_clicks_data)
 
-    # Fetch one result
-    row = cur.fetchall()
-    print(row);
-
-    # Process and insert song and artist data
-    # write_to_db(cur, conn, filepath='data/song_data', func=process_song_file)
-
-    # Close connection to sparkifydb
-    conn.close()
+    ## Download data
+    # download_data(credit_reports_with_conversion_data, ['masked_id', "local_datetime", "local_date", "credit_score", "employment_status", "residential_status", "salary", "ever_default", "ever_delinquent", "birth_date", "months_since_default", "open_credit_cards", "open_loans", "converted", "converted_date"], 'data/processed/credit_reports_with_conversion_data.csv')
+    
 
 
 if __name__ == "__main__":

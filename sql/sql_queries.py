@@ -189,3 +189,4 @@ DO NOTHING;
 # QUERY LISTS
 create_table_queries = [player_fixtures_table_create, players_table_create, positions_table_create, teams_table_create, gameweeks_table_create]
 drop_table_queries = [player_fixtures_table_drop, players_table_drop, positions_table_drop, teams_table_drop, gameweeks_table_drop]
+settings_queries = ["set global workload = 'olap';", 'set @@sql_mode = (select replace(@@sql_mode,"ONLY_FULL_GROUP_BY", ""));']
