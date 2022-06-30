@@ -179,6 +179,8 @@ def main():
     create_tables()
     test_db()
 
+    process_weekly_data()
+
     # UNCOMMENT LINES BELOW AS WELL AS drop_tables() above to repopulate db with records
     # Process and insert clearscore data
     # process_data(filepath = 'data/raw/credit_reports', func = process_credit_reports_data)
