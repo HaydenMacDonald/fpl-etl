@@ -3,9 +3,12 @@
 player_fixtures_table_drop = "DROP TABLE IF EXISTS player_fixtures;"
 players_table_drop = "DROP TABLE IF EXISTS players;"
 positions_table_drop = "DROP TABLE IF EXISTS positions;"
+player_positions_table_drop = "DROP TABLE IF EXISTS player_positions;"
 teams_table_drop = "DROP TABLE IF EXISTS teams;"
+player_teams_drop = "DROP TABLE IF EXISTS player_teams;"
 fixtures_table_drop = "DROP TABLE IF EXISTS fixtures;"
 gameweeks_table_drop = "DROP TABLE IF EXISTS gameweeks;"
+seasons_table_drop = "DROP TABLE IF EXISTS seasons;"
 
 # CREATE TABLES
 
@@ -15,9 +18,6 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     player_id VARCHAR(100),
     fixture_id VARCHAR(100),
     gameweek_id VARCHAR(100),
-    season INT,
-
-    position_id INT,
     price DOUBLE(4,2),
     minutes INT,
     nineties DOUBLE(4,2),
@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     yellow_cards_p90 DOUBLE(4,2),
     red_cards INT,
     red_cards_p90 DOUBLE(4,2),
-    play_probability_next_game DOUBLE(4,2),
     play_probability_this_game DOUBLE(4,2),
+    play_probability_next_game DOUBLE(4,2),
     team_spi DOUBLE(4,2),
     opponent_spi DOUBLE(4,2),
     win_prob DOUBLE(4,4),
@@ -67,6 +67,11 @@ CREATE TABLE IF NOT EXISTS positions (
     position_name VARCHAR(100) NOT NULL,
     position_type VARCHAR(100) NOT NULL
 );
+""")
+
+player_positions_table_create = ("""
+    position_id INT,
+    player_id VARCHAR(100),
 """)
 
 teams_table_create = ("""
