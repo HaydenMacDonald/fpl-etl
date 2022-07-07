@@ -82,6 +82,8 @@ CREATE TABLE IF NOT EXISTS teams (
 );
 """)
 
+player_teams_table_create
+
 fixtures_table_create = ("""
 CREATE TABLE IF NOT EXISTS fixtures (
     fixture_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
