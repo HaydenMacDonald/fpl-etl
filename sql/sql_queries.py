@@ -5,7 +5,7 @@ players_table_drop = "DROP TABLE IF EXISTS players;"
 positions_table_drop = "DROP TABLE IF EXISTS positions;"
 player_positions_table_drop = "DROP TABLE IF EXISTS player_positions;"
 teams_table_drop = "DROP TABLE IF EXISTS teams;"
-player_teams_drop = "DROP TABLE IF EXISTS player_teams;"
+player_teams_table_drop = "DROP TABLE IF EXISTS player_teams;"
 fixtures_table_drop = "DROP TABLE IF EXISTS fixtures;"
 gameweeks_table_drop = "DROP TABLE IF EXISTS gameweeks;"
 seasons_table_drop = "DROP TABLE IF EXISTS seasons;"
@@ -14,10 +14,8 @@ seasons_table_drop = "DROP TABLE IF EXISTS seasons;"
 
 player_fixtures_table_create = ("""
 CREATE TABLE IF NOT EXISTS player_fixtures (
-    ref INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    player_id VARCHAR(100),
-    fixture_id VARCHAR(100),
-    gameweek_id VARCHAR(100),
+    player_id VARCHAR(100) NOT NULL,
+    fixture_id VARCHAR(100) NOT NULL,
     price DOUBLE(4,2),
     minutes INT,
     nineties DOUBLE(4,2),
@@ -49,7 +47,8 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     last_three_form DOUBLE(4,2),
     points_per_game DOUBLE(4,2),
     total_points INT,
-    actual_points_earned INT
+    actual_points_earned INT,
+    PRIMARY KEY (player_id, fixture_id)
 );
 """)
 
@@ -70,8 +69,13 @@ CREATE TABLE IF NOT EXISTS positions (
 """)
 
 player_positions_table_create = ("""
+CREATE TABLE IF NOT EXISTS player_positions (
     position_id INT,
     player_id VARCHAR(100),
+    from DATE,
+    to DATE,
+    PRIMARY KEY (position_id, player_id)
+);
 """)
 
 teams_table_create = ("""
@@ -82,33 +86,41 @@ CREATE TABLE IF NOT EXISTS teams (
 );
 """)
 
-player_teams_table_create
+player_teams_table_create = ("""
+CREATE TABLE IF NOT EXISTS player_teams (
+    team_id INT,
+    player_id VARCHAR(100),
+    from DATE,
+    to DATE,
+    PRIMARY KEY (team_id, player_id)
+)
+""")
 
 fixtures_table_create = ("""
 CREATE TABLE IF NOT EXISTS fixtures (
-    fixture_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    fixture_id INT NOT NULL PRIMARY KEY,
     home_team_id INT,
     away_team_id INT,
-    kickoff_time datetime,
+    kickoff_time DATETIME,
     gameweek_id INT
 );
 """)
 
 gameweeks_table_create = ("""
 CREATE TABLE IF NOT EXISTS gameweeks (
-    gameweek_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, 
+    gameweek_id INT NOT NULL PRIMARY KEY, 
     season INT, 
     gameweek_no INT, 
-    start_date datetime, 
-    end_date datetime
+    start_date DATETIME, 
+    end_date DATETIME
 );
 """)
 
 seasons_table_create = ("""
 CREATE TABLE IF NOT EXISTS seasons (
-    season INT NOT NULL, 
-    start_date date, 
-    end_date date
+    season INT NOT NULL PRIMARY KEY, 
+    start_date DATE, 
+    end_date DATE
 );
 """)
 
@@ -159,7 +171,7 @@ INSERT INTO player_fixtures (
     actual_points_earned
 )
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-ON CONFLICT (ref) 
+ON CONFLICT (player_id, fixture_id) 
 DO NOTHING;
 """)
 
@@ -175,25 +187,93 @@ DO NOTHING;
 """)
 
 positions_table_insert = ("""
-INSERT INTO positions VALUES (%s, %s, %s)
+INSERT INTO positions (
+    position_id, 
+    position_name,
+    position_type
+)
+VALUES (%s, %s, %s)
 ON CONFLICT (position_id) 
 DO NOTHING;
 """)
 
+player_positions_table_insert = ("""
+INSERT INTO positions (
+    position_id,
+    player_id,
+    from,
+    to
+)
+VALUES (%s, %s, %s, %s)
+ON CONFLICT (position_id, player_id) 
+DO NOTHING;
+""")
+
 teams_table_insert = ("""
-INSERT INTO teams VALUES (%s, %s, %s)
+INSERT INTO teams (
+    team_id, 
+    team_name,
+    short_name
+)
+VALUES (%s, %s, %s)
 ON CONFLICT (team_id) 
 DO NOTHING;
 """)
 
+player_teams_table_insert = ("""
+INSERT INTO player_teams (
+    team_id,
+    player_id,
+    from,
+    to
+)
+VALUES (%s, %s, %s, %s)
+ON CONFLICT (team_id, player_id) 
+DO NOTHING;
+""")
+
+
+fixtures_table_insert = ("""
+INSERT INTO fixtures (
+    fixture_id,
+    home_team_id,
+    away_team_id,
+    kickoff_time,
+    gameweek_id
+)
+VALUES (%s, %s, %s, %s, %s)
+ON CONFLICT (fixture_id) 
+DO NOTHING;
+""")
+
 gameweeks_table_insert = ("""
-INSERT INTO gameweeks VALUES (%s, %s, %s, %s, %s) 
+INSERT INTO gameweeks (
+    gameweek_id, 
+    season, 
+    gameweek_no, 
+    start_DATE, 
+    end_date
+)
+VALUES (%s, %s, %s, %s, %s) 
 ON CONFLICT (gameweek_id) 
+DO NOTHING;
+""")
+
+seasons_table_insert = ("""
+INSERT INTO seasons (
+    season,
+    season_name,
+    start_DATE, 
+    end_date
+)
+VALUES (%s, %s, %s, %s) 
+ON CONFLICT (season) 
 DO NOTHING;
 """)
 
 
 # QUERY LISTS
-create_table_queries = [player_fixtures_table_create, players_table_create, positions_table_create, teams_table_create, gameweeks_table_create]
-drop_table_queries = [player_fixtures_table_drop, players_table_drop, positions_table_drop, teams_table_drop, gameweeks_table_drop]
+create_table_queries = [player_fixtures_table_create, players_table_create, positions_table_create, player_positions_table_create, teams_table_create, player_teams_table_create, fixtures_table_create, gameweeks_table_create, seasons_table_create]
+drop_table_queries = [player_fixtures_table_drop, players_table_drop, positions_table_drop, player_positions_table_drop, teams_table_drop, player_teams_table_drop, fixtures_table_drop, gameweeks_table_drop, seasons_table_drop]
+insert_table_queries = [player_fixtures_table_insert, players_table_insert, positions_table_insert, player_positions_table_insert, teams_table_insert, player_teams_table_insert, fixtures_table_insert, gameweeks_table_insert, seasons_table_insert]
 settings_queries = ["set global workload = 'olap';", 'set @@sql_mode = (select replace(@@sql_mode,"ONLY_FULL_GROUP_BY", ""));']
