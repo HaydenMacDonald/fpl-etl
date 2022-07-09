@@ -48,7 +48,14 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     points_per_game DOUBLE(4,2),
     total_points INT,
     actual_points_earned INT,
-    PRIMARY KEY (player_id, fixture_id)
+    PRIMARY KEY (player_id, fixture_id),
+    INDEX(player_id, fixture_id),
+    FOREIGN KEY (player_id)
+      REFERENCES players(player_id)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (fixture_id)
+      REFERENCES fixtures(fixture_id)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
 )   ENGINE=INNODB;
 """)
 
@@ -64,7 +71,7 @@ positions_table_create = ("""
 CREATE TABLE IF NOT EXISTS positions (
     position_id INT NOT NULL PRIMARY KEY, 
     position_name VARCHAR(100) NOT NULL,
-    position_type VARCHAR(100) NOT NULL
+    position_type VARCHAR(100) NOT NULL,
 )   ENGINE=INNODB;
 """)
 
@@ -74,7 +81,13 @@ CREATE TABLE IF NOT EXISTS player_positions (
     player_id VARCHAR(100),
     from DATE,
     to DATE,
-    PRIMARY KEY (position_id, player_id)
+    PRIMARY KEY (position_id, player_id),
+    FOREIGN KEY (position_id)
+      REFERENCES positions(position_id)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (player_id)
+      REFERENCES players(player_id)
+      ON UPDATE CASCADE ON DELETE RESTRICT
 )   ENGINE=INNODB;
 """)
 
@@ -92,7 +105,13 @@ CREATE TABLE IF NOT EXISTS player_teams (
     player_id VARCHAR(100),
     from DATE,
     to DATE,
-    PRIMARY KEY (team_id, player_id)
+    PRIMARY KEY (team_id, player_id),
+    FOREIGN KEY (team_id)
+      REFERENCES teams(team_id)
+      ON UPDATE CASCADE ON DELETE RESTRICT,
+    FOREIGN KEY (player_id)
+      REFERENCES players(player_id)
+      ON UPDATE CASCADE ON DELETE RESTRICT
 )   ENGINE=INNODB;
 """)
 
@@ -102,7 +121,10 @@ CREATE TABLE IF NOT EXISTS fixtures (
     home_team_id INT,
     away_team_id INT,
     kickoff_time DATETIME,
-    gameweek_id INT
+    gameweek_id INT,
+    FOREIGN KEY (gameweek_id)
+      REFERENCES gameweeks(gameweek_id)
+      ON UPDATE CASCADE ON DELETE RESTRICT
 )   ENGINE=INNODB;
 """)
 
@@ -112,7 +134,10 @@ CREATE TABLE IF NOT EXISTS gameweeks (
     season INT, 
     gameweek_no INT, 
     start_date DATETIME, 
-    end_date DATETIME
+    end_date DATETIME,
+    FOREIGN KEY (season)
+      REFERENCES seasons(season)
+      ON UPDATE CASCADE ON DELETE RESTRICT
 )   ENGINE=INNODB;
 """)
 
