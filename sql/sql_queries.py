@@ -49,7 +49,7 @@ CREATE TABLE IF NOT EXISTS player_fixtures (
     total_points INT,
     actual_points_earned INT,
     PRIMARY KEY (player_id, fixture_id)
-);
+)   ENGINE=INNODB;
 """)
 
 players_table_create = ("""
@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS players (
     player_id VARCHAR(100) NOT NULL PRIMARY KEY,
     first_name VARCHAR(150), 
     last_name VARCHAR(150)
-);
+)   ENGINE=INNODB;
 """)
 
 positions_table_create = ("""
@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS positions (
     position_id INT NOT NULL PRIMARY KEY, 
     position_name VARCHAR(100) NOT NULL,
     position_type VARCHAR(100) NOT NULL
-);
+)   ENGINE=INNODB;
 """)
 
 player_positions_table_create = ("""
@@ -75,7 +75,7 @@ CREATE TABLE IF NOT EXISTS player_positions (
     from DATE,
     to DATE,
     PRIMARY KEY (position_id, player_id)
-);
+)   ENGINE=INNODB;
 """)
 
 teams_table_create = ("""
@@ -83,7 +83,7 @@ CREATE TABLE IF NOT EXISTS teams (
     team_id INT NOT NULL PRIMARY KEY, 
     team_name VARCHAR(150) NOT NULL,
     short_name VARCHAR(100) NOT NULL
-);
+)   ENGINE=INNODB;
 """)
 
 player_teams_table_create = ("""
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS player_teams (
     from DATE,
     to DATE,
     PRIMARY KEY (team_id, player_id)
-)
+)   ENGINE=INNODB;
 """)
 
 fixtures_table_create = ("""
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS fixtures (
     away_team_id INT,
     kickoff_time DATETIME,
     gameweek_id INT
-);
+)   ENGINE=INNODB;
 """)
 
 gameweeks_table_create = ("""
@@ -113,7 +113,7 @@ CREATE TABLE IF NOT EXISTS gameweeks (
     gameweek_no INT, 
     start_date DATETIME, 
     end_date DATETIME
-);
+)   ENGINE=INNODB;
 """)
 
 seasons_table_create = ("""
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS seasons (
     season INT NOT NULL PRIMARY KEY, 
     start_date DATE, 
     end_date DATE
-);
+)   ENGINE=INNODB;
 """)
 
 
